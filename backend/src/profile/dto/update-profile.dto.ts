@@ -1,4 +1,27 @@
-import { IsArray, IsInt, IsObject, IsOptional, IsString, MaxLength, Min } from "class-validator";
+import { IsArray, IsInt, IsObject, IsOptional, IsString, MaxLength, Min, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
+
+class TimelineItemDto {
+  @IsString() @MaxLength(100)
+  date!: string;
+
+  @IsString() @MaxLength(200)
+  role!: string;
+
+  @IsString() @MaxLength(300)
+  org!: string;
+
+  @IsString() @MaxLength(1000)
+  detail!: string;
+}
+
+class CredentialGroupDto {
+  @IsString() @MaxLength(100)
+  group!: string;
+
+  @IsArray() @IsString({ each: true })
+  items!: string[];
+}
 
 export class UpdateProfileDto {
   @IsOptional() @IsString() @MaxLength(200)
@@ -27,4 +50,16 @@ export class UpdateProfileDto {
 
   @IsOptional() @IsArray()
   focus_areas?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => TimelineItemDto)
+  timeline?: TimelineItemDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CredentialGroupDto)
+  credentials?: CredentialGroupDto[];
 }

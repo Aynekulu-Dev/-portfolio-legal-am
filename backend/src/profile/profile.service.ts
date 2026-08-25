@@ -27,6 +27,8 @@ export class ProfileService {
       ...(dto.location !== undefined && { location: dto.location }),
       ...(dto.years_experience !== undefined && { yearsExperience: dto.years_experience }),
       ...(dto.focus_areas !== undefined && { focusAreas: dto.focus_areas }),
+      ...(dto.timeline !== undefined && { timeline: dto.timeline }),
+      ...(dto.credentials !== undefined && { credentials: dto.credentials }),
       updatedAt: new Date()
     };
 

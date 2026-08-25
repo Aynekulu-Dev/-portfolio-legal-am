@@ -20,6 +20,14 @@ export const profile = pgTable("profile", {
   location: text("location"),
   yearsExperience: integer("years_experience"),
   focusAreas: jsonb("focus_areas").$type<string[]>().default([]),
+  // Editable "About" page content — kept as JSON on the single profile row
+  // rather than separate tables since there's only ever one owner.
+  timeline: jsonb("timeline")
+    .$type<{ date: string; role: string; org: string; detail: string }[]>()
+    .default([]),
+  credentials: jsonb("credentials")
+    .$type<{ group: string; items: string[] }[]>()
+    .default([]),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
 

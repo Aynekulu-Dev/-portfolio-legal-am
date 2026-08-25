@@ -27,8 +27,13 @@ export class UploadsController {
     if (!IMAGE_TYPES.includes(file.mimetype)) {
       throw new BadRequestException("Avatar must be a JPEG, PNG, WebP, or GIF image.");
     }
-    const result = await this.uploadsService.uploadBuffer(file.buffer, "avatars");
-    return { url: result.secure_url };
+    const result = await this.uploadsService.uploadBuffer(
+      file.buffer,
+      "avatars",
+      file.mimetype,
+      file.originalname
+    );
+    return { url: result.url };
   }
 
   @Post("resume")
@@ -38,7 +43,12 @@ export class UploadsController {
     if (file.mimetype !== PDF_TYPE) {
       throw new BadRequestException("Resume must be a PDF file.");
     }
-    const result = await this.uploadsService.uploadBuffer(file.buffer, "resumes");
-    return { url: result.secure_url };
+    const result = await this.uploadsService.uploadBuffer(
+      file.buffer,
+      "resumes",
+      file.mimetype,
+      file.originalname
+    );
+    return { url: result.url };
   }
 }
