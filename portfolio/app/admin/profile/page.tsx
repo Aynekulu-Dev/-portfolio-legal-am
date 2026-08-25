@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Check, AlertCircle, Upload } from "lucide-react";
+import { Loader2, Check, AlertCircle, Upload, Plus, Trash2 } from "lucide-react";
 import { adminFetch, adminUploadFile, ApiError } from "@/lib/admin/client";
+
+type TimelineItem = { date: string; role: string; org: string; detail: string };
+type CredentialGroup = { group: string; items: string[] };
 
 type ProfileRow = {
   id: number;
@@ -15,6 +18,8 @@ type ProfileRow = {
   yearsExperience: number | null;
   focusAreas: string[] | null;
   socials: Record<string, string> | null;
+  timeline: TimelineItem[] | null;
+  credentials: CredentialGroup[] | null;
 };
 
 const EMPTY = {
@@ -31,8 +36,13 @@ const EMPTY = {
   email: ""
 };
 
+const EMPTY_TIMELINE_ITEM: TimelineItem = { date: "", role: "", org: "", detail: "" };
+const EMPTY_CREDENTIAL_GROUP: CredentialGroup = { group: "", items: [""] };
+
 export default function AdminProfilePage() {
   const [form, setForm] = useState(EMPTY);
+  const [timeline, setTimeline] = useState<TimelineItem[]>([]);
+  const [credentials, setCredentials] = useState<CredentialGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +66,8 @@ export default function AdminProfilePage() {
           telegram: p.socials?.telegram ?? "",
           email: p.socials?.email ?? ""
         });
+        setTimeline(p.timeline && p.timeline.length ? p.timeline : []);
+        setCredentials(p.credentials && p.credentials.length ? p.credentials : []);
       })
       .catch((err) => {
         // No profile row yet is fine on a fresh DB — start from a blank form.
@@ -63,6 +75,32 @@ export default function AdminProfilePage() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  // --- Timeline helpers ---
+  function updateTimelineItem(index: number, patch: Partial<TimelineItem>) {
+    setTimeline((items) => items.map((it, i) => (i === index ? { ...it, ...patch } : it)));
+  }
+  function addTimelineItem() {
+    setTimeline((items) => [...items, { ...EMPTY_TIMELINE_ITEM }]);
+  }
+  function removeTimelineItem(index: number) {
+    setTimeline((items) => items.filter((_, i) => i !== index));
+  }
+
+  // --- Credentials helpers ---
+  function updateCredentialGroupName(index: number, groupName: string) {
+    setCredentials((groups) => groups.map((g, i) => (i === index ? { ...g, group: groupName } : g)));
+  }
+  function updateCredentialItems(index: number, itemsText: string) {
+    const items = itemsText.split("\n");
+    setCredentials((groups) => groups.map((g, i) => (i === index ? { ...g, items } : g)));
+  }
+  function addCredentialGroup() {
+    setCredentials((groups) => [...groups, { ...EMPTY_CREDENTIAL_GROUP }]);
+  }
+  function removeCredentialGroup(index: number) {
+    setCredentials((groups) => groups.filter((_, i) => i !== index));
+  }
 
   async function handleFileSelect(
     e: React.ChangeEvent<HTMLInputElement>,
@@ -118,7 +156,16 @@ export default function AdminProfilePage() {
             ...(form.linkedin && { linkedin: form.linkedin }),
             ...(form.telegram && { telegram: form.telegram }),
             ...(form.email && { email: form.email })
-          }
+          },
+          timeline: timeline
+            .filter((t) => t.date || t.role || t.org || t.detail)
+            .map((t) => ({ date: t.date, role: t.role, org: t.org, detail: t.detail })),
+          credentials: credentials
+            .filter((c) => c.group)
+            .map((c) => ({
+              group: c.group,
+              items: c.items.map((i) => i.trim()).filter(Boolean)
+            }))
         })
       });
       setSaved(true);
@@ -230,6 +277,121 @@ export default function AdminProfilePage() {
           <div>
             <label className={labelClass}>Email (mailto:...)</label>
             <input {...field("email")} className={inputClass} />
+          </div>
+        </div>
+
+        {/* Timeline (work experience) */}
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className={labelClass}>የስራ ልምድ (Timeline)</label>
+            <button
+              type="button"
+              onClick={addTimelineItem}
+              className="flex items-center gap-1 rounded-sm border border-border px-2.5 py-1 font-mono text-xs text-fg transition-colors hover:border-maroon hover:text-maroon"
+            >
+              <Plus size={12} /> ጨምር
+            </button>
+          </div>
+          <div className="space-y-4">
+            {timeline.map((item, i) => (
+              <div key={i} className="rounded-sm border border-border p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="font-mono text-xs text-muted">#{i + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeTimelineItem(i)}
+                    className="text-muted transition-colors hover:text-maroon"
+                    aria-label="ሰርዝ"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className={labelClass}>ቀን (ለምሳሌ 2019 – 2023)</label>
+                    <input
+                      value={item.date}
+                      onChange={(e) => updateTimelineItem(i, { date: e.target.value })}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>ማዕረግ / ሚና</label>
+                    <input
+                      value={item.role}
+                      onChange={(e) => updateTimelineItem(i, { role: e.target.value })}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className={labelClass}>ድርጅት</label>
+                    <input
+                      value={item.org}
+                      onChange={(e) => updateTimelineItem(i, { org: e.target.value })}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className={labelClass}>ዝርዝር</label>
+                    <textarea
+                      rows={2}
+                      value={item.detail}
+                      onChange={(e) => updateTimelineItem(i, { detail: e.target.value })}
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            {timeline.length === 0 && (
+              <p className="text-sm text-muted">ገና ምንም አልተጨመረም። "ጨምር" ተጫን።</p>
+            )}
+          </div>
+        </div>
+
+        {/* Credentials (education / skills groups) */}
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className={labelClass}>ብቃት እና ትምህርት (Credentials)</label>
+            <button
+              type="button"
+              onClick={addCredentialGroup}
+              className="flex items-center gap-1 rounded-sm border border-border px-2.5 py-1 font-mono text-xs text-fg transition-colors hover:border-maroon hover:text-maroon"
+            >
+              <Plus size={12} /> ቡድን ጨምር
+            </button>
+          </div>
+          <div className="space-y-4">
+            {credentials.map((group, i) => (
+              <div key={i} className="rounded-sm border border-border p-4">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <input
+                    value={group.group}
+                    onChange={(e) => updateCredentialGroupName(i, e.target.value)}
+                    placeholder="የቡድን ስም (ለምሳሌ: ትምህርት)"
+                    className={inputClass}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeCredentialGroup(i)}
+                    className="shrink-0 text-muted transition-colors hover:text-maroon"
+                    aria-label="ሰርዝ"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+                <label className={labelClass}>ዝርዝሮች (እያንዳንዱን በአዲስ መስመር ላይ ጻፍ)</label>
+                <textarea
+                  rows={4}
+                  value={group.items.join("\n")}
+                  onChange={(e) => updateCredentialItems(i, e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            ))}
+            {credentials.length === 0 && (
+              <p className="text-sm text-muted">ገና ምንም አልተጨመረም። "ቡድን ጨምር" ተጫን።</p>
+            )}
           </div>
         </div>
 
