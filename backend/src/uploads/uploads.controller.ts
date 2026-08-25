@@ -1,26 +1,44 @@
-import { Controller, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import {
+  BadRequestException,
+  Controller,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors
+} from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import type { Express } from "express";
 import { AdminGuard } from "../auth/admin.guard";
 import { UploadsService } from "./uploads.service";
 
-/**
- * Admin-only file uploads (avatar image + resume PDF), proxied to Cloudinary.
- * Matches the frontend's adminUploadFile("/uploads/avatar" | "/uploads/resume").
- */
+const MAX_FILE_SIZE = 8 * 1024 * 1024;
+const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const PDF_TYPE = "application/pdf";
+
 @Controller("uploads")
 @UseGuards(AdminGuard)
 export class UploadsController {
   constructor(private readonly uploadsService: UploadsService) {}
 
   @Post("avatar")
-  @UseInterceptors(FileInterceptor("file"))
-  uploadAvatar(@UploadedFile() file: Express.Multer.File) {
-    return this.uploadsService.upload(file, "avatar");
+  @UseInterceptors(FileInterceptor("file", { limits: { fileSize: MAX_FILE_SIZE } }))
+  async uploadAvatar(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException("No file uploaded.");
+    if (!IMAGE_TYPES.includes(file.mimetype)) {
+      throw new BadRequestException("Avatar must be a JPEG, PNG, WebP, or GIF image.");
+    }
+    const result = await this.uploadsService.uploadBuffer(file.buffer, "avatars");
+    return { url: result.secure_url };
   }
 
   @Post("resume")
-  @UseInterceptors(FileInterceptor("file"))
-  uploadResume(@UploadedFile() file: Express.Multer.File) {
-    return this.uploadsService.upload(file, "resume");
+  @UseInterceptors(FileInterceptor("file", { limits: { fileSize: MAX_FILE_SIZE } }))
+  async uploadResume(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException("No file uploaded.");
+    if (file.mimetype !== PDF_TYPE) {
+      throw new BadRequestException("Resume must be a PDF file.");
+    }
+    const result = await this.uploadsService.uploadBuffer(file.buffer, "resumes");
+    return { url: result.secure_url };
   }
 }

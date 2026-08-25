@@ -5,6 +5,7 @@ import * as bcrypt from "bcryptjs";
 import { DB, Database } from "../db/db.module";
 import { admins } from "../db/schema";
 import { LoginDto } from "./dto/login.dto";
+import { ChangePasswordDto } from "./dto/change-password.dto";
 
 export interface AdminJwtPayload {
   sub: number;
@@ -40,5 +41,26 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload);
 
     return { accessToken, email: admin.email };
+  }
+
+  // Lets the logged-in admin set a new password. Requires the current password
+  // (not just a valid JWT) so a leaked/stolen token alone can't take over the
+  // account permanently.
+  async changePassword(adminId: number, dto: ChangePasswordDto): Promise<{ success: true }> {
+    const [admin] = await this.db.select().from(admins).where(eq(admins.id, adminId)).limit(1);
+
+    if (!admin) {
+      throw new UnauthorizedException("Admin account not found.");
+    }
+
+    const currentMatches = await bcrypt.compare(dto.currentPassword, admin.passwordHash);
+    if (!currentMatches) {
+      throw new UnauthorizedException("የአሁኑ የይለፍ ቃል ትክክል አይደለም።");
+    }
+
+    const newHash = await bcrypt.hash(dto.newPassword, 10);
+    await this.db.update(admins).set({ passwordHash: newHash }).where(eq(admins.id, adminId));
+
+    return { success: true };
   }
 }
