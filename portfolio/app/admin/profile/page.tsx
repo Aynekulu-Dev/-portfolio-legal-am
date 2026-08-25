@@ -344,7 +344,7 @@ export default function AdminProfilePage() {
               </div>
             ))}
             {timeline.length === 0 && (
-              <p className="text-sm text-muted">ገና ምንም አልተጨመረም። "ጨምር" ተጫን።</p>
+              <p className="text-sm text-muted">ገና ምንም አልተጨመረም። &quot;ጨምር&quot; ተጫን።</p>
             )}
           </div>
         </div>
@@ -390,7 +390,7 @@ export default function AdminProfilePage() {
               </div>
             ))}
             {credentials.length === 0 && (
-              <p className="text-sm text-muted">ገና ምንም አልተጨመረም። "ቡድን ጨምር" ተጫን።</p>
+              <p className="text-sm text-muted">ገና ምንም አልተጨመረም። &quot;ቡድን ጨምር&quot; ተጫን።</p>
             )}
           </div>
         </div>
