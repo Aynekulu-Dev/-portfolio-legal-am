@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #efede6;
+  --surface: #ffffff;
+  --surface-2: #f5f2ea;
+  --border: #dcd6c8;
+  --fg: #1b1b1a;
+  --muted: #6b655a;
+  --maroon: #7a2331;
+  --brass: #a9812e;
+}
+
+.dark {
+  --ink: #14171c;
+  --surface: #1b1f26;
+  --surface-2: #22262f;
+  --border: #2e333d;
+  --fg: #edeae1;
+  --muted: #9a978f;
+  --maroon: #c14b57;
+  --brass: #c9a15a;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--ink);
+  color: var(--fg);
+}
+
+::selection {
+  background-color: var(--maroon);
+  color: var(--ink);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--maroon);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ruled ledger paper texture used behind the hero */
+.ledger-fade {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 39px,
+    var(--border) 40px
+  );
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 0%, black 40%, transparent 100%);
+}
+
+/* circular seal mark used as the signature element */
+.seal {
+  border: 1.5px solid var(--maroon);
+  border-radius: 9999px;
+  position: relative;
+}
+
+.seal::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--maroon);
+  border-radius: 9999px;
+  opacity: 0.5;
+}
