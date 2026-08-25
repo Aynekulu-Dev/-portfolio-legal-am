@@ -64,6 +64,30 @@ export async function adminFetch<T = any>(path: string, options: RequestInit = {
   return res.json();
 }
 
+/**
+ * Uploads a file (multipart/form-data) to an admin-protected endpoint, e.g.
+ * "/uploads/avatar" or "/uploads/resume". Returns the hosted file's URL.
+ * Deliberately does NOT set Content-Type — the browser sets the correct
+ * multipart boundary automatically when given a FormData body.
+ */
+export async function adminUploadFile(path: string, file: File): Promise<{ url: string }> {
+  const base = getApiUrl();
+  const token = getAdminToken();
+  if (!base) throw new ApiError(0, "Backend URL አልተዋቀረም።");
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${base}${path}`, {
+    method: "POST",
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: formData
+  });
+
+  if (!res.ok) throw new ApiError(res.status, await parseErrorMessage(res));
+  return res.json();
+}
+
 /** Logs in with email + password against POST /auth/login and stores the returned JWT. */
 export async function adminLogin(apiUrl: string, email: string, password: string): Promise<void> {
   const base = apiUrl.replace(/\/$/, "");

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Check, AlertCircle } from "lucide-react";
-import { adminFetch, ApiError } from "@/lib/admin/client";
+import { Loader2, Check, AlertCircle, Upload } from "lucide-react";
+import { adminFetch, adminUploadFile, ApiError } from "@/lib/admin/client";
 
 type ProfileRow = {
   id: number;
@@ -37,6 +37,8 @@ export default function AdminProfilePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
 
   useEffect(() => {
     adminFetch<ProfileRow>("/profile")
@@ -61,6 +63,29 @@ export default function AdminProfilePage() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  async function handleFileSelect(
+    e: React.ChangeEvent<HTMLInputElement>,
+    kind: "avatar" | "resume"
+  ) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file later
+    if (!file) return;
+
+    const setUploading = kind === "avatar" ? setUploadingAvatar : setUploadingResume;
+    const fieldName = kind === "avatar" ? "avatar_url" : "resume_url";
+
+    setUploading(true);
+    setError(null);
+    try {
+      const { url } = await adminUploadFile(`/uploads/${kind}`, file);
+      setForm((f) => ({ ...f, [fieldName]: url }));
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   function field(name: keyof typeof EMPTY) {
     return {
@@ -134,11 +159,49 @@ export default function AdminProfilePage() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <label className={labelClass}>Avatar URL</label>
-            <input {...field("avatar_url")} className={inputClass} />
+            <div className="flex gap-2">
+              <input {...field("avatar_url")} className={inputClass} />
+              <label
+                className={`flex shrink-0 cursor-pointer items-center gap-1.5 rounded-sm border border-border px-3 py-2.5 font-mono text-xs text-fg transition-colors hover:border-maroon hover:text-maroon ${uploadingAvatar ? "pointer-events-none opacity-60" : ""}`}
+              >
+                {uploadingAvatar ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : (
+                  <Upload size={13} />
+                )}
+                ፎቶ ላክ
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                  onChange={(e) => handleFileSelect(e, "avatar")}
+                  disabled={uploadingAvatar}
+                />
+              </label>
+            </div>
           </div>
           <div>
             <label className={labelClass}>Resume URL</label>
-            <input {...field("resume_url")} className={inputClass} />
+            <div className="flex gap-2">
+              <input {...field("resume_url")} className={inputClass} />
+              <label
+                className={`flex shrink-0 cursor-pointer items-center gap-1.5 rounded-sm border border-border px-3 py-2.5 font-mono text-xs text-fg transition-colors hover:border-maroon hover:text-maroon ${uploadingResume ? "pointer-events-none opacity-60" : ""}`}
+              >
+                {uploadingResume ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : (
+                  <Upload size={13} />
+                )}
+                PDF ላክ
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  className="hidden"
+                  onChange={(e) => handleFileSelect(e, "resume")}
+                  disabled={uploadingResume}
+                />
+              </label>
+            </div>
           </div>
           <div>
             <label className={labelClass}>አድራሻ</label>
