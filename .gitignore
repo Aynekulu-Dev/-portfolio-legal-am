@@ -1,5 +1,7 @@
-# ReCode local database
-.recode
-backend.zip
-portfolio.zip
-*.zip
+node_modules/
+.env
+.env.local
+dist/
+build/
+.next/
+*.log
