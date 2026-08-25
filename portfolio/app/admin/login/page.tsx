@@ -5,9 +5,12 @@ import { useRouter } from "next/navigation";
 import { Loader2, AlertCircle, LogIn } from "lucide-react";
 import { adminLogin, clearAdminCredentials, ApiError } from "@/lib/admin/client";
 
+// Backend URL comes straight from the build-time env var — no visible field,
+// so the admin only ever has to enter email + password.
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [url, setUrl] = useState(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +21,7 @@ export default function AdminLoginPage() {
     setError(null);
     setLoading(true);
     try {
-      await adminLogin(url.trim(), email.trim(), password);
+      await adminLogin(API_URL, email.trim(), password);
       router.replace("/admin/profile");
     } catch (err) {
       clearAdminCredentials();
@@ -41,15 +44,6 @@ export default function AdminLoginPage() {
       <p className="mt-2 text-sm text-muted">ይህ portfolio ባለቤት ብቻ የሚደርስበት ገፅ ነው።</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-        <div>
-          <label className="mb-1.5 block font-mono text-xs text-muted">Backend URL</label>
-          <input
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="http://localhost:4000"
-            className="w-full rounded-sm border border-border bg-surface px-3.5 py-2.5 text-sm text-fg outline-none transition-colors focus:border-maroon"
-          />
-        </div>
         <div>
           <label className="mb-1.5 block font-mono text-xs text-muted">Email</label>
           <input
