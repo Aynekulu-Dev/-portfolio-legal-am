@@ -23,14 +23,16 @@ const mono = JetBrains_Mono({
   weight: ["400", "500"]
 });
 
-const profile = getProfile();
+export async function generateMetadata(): Promise<Metadata> {
+  const profile = await getProfile();
+  return {
+    title: `${profile.full_name} — ${profile.headline}`,
+    description: profile.bio
+  };
+}
 
-export const metadata: Metadata = {
-  title: `${profile.full_name} — ${profile.headline}`,
-  description: profile.bio
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const profile = await getProfile();
   return (
     <html lang="am" suppressHydrationWarning>
       <body className={`${display.variable} ${body.variable} ${mono.variable} font-body`}>

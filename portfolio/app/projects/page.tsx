@@ -4,8 +4,8 @@ import { getCases } from "@/lib/data";
 
 export const metadata: Metadata = { title: "መዝገቦች" };
 
-export default function ProjectsPage() {
-  const items = getCases();
+export default async function ProjectsPage() {
+  const items = await getCases();
 
   return (
     <div className="mx-auto max-w-content px-6 py-20">

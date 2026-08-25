@@ -4,8 +4,8 @@ import { getServices } from "@/lib/data";
 
 export const metadata: Metadata = { title: "አገልግሎቶች" };
 
-export default function ServicesPage() {
-  const services = getServices();
+export default async function ServicesPage() {
+  const services = await getServices();
 
   return (
     <div className="mx-auto max-w-content px-6 py-20">

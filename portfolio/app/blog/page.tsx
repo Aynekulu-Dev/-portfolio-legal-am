@@ -4,8 +4,8 @@ import { getBlogPosts } from "@/lib/data";
 
 export const metadata: Metadata = { title: "ብሎግ" };
 
-export default function BlogPage() {
-  const posts = getBlogPosts();
+export default async function BlogPage() {
+  const posts = await getBlogPosts();
 
   return (
     <div className="mx-auto max-w-content px-6 py-20">

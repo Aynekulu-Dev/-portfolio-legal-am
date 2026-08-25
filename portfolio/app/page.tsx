@@ -5,10 +5,10 @@ import { ServiceCard } from "@/components/ServiceCard";
 import { CaseCard } from "@/components/CaseCard";
 import { getProfile, getServices, getCases } from "@/lib/data";
 
-export default function HomePage() {
-  const profile = getProfile();
-  const services = getServices().slice(0, 4);
-  const featuredCases = getCases().slice(0, 3);
+export default async function HomePage() {
+  const profile = await getProfile();
+  const services = (await getServices()).slice(0, 4);
+  const featuredCases = (await getCases()).slice(0, 3);
 
   return (
     <>

@@ -5,12 +5,17 @@ import { ArrowLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { getBlogPostBySlug, getBlogPosts, estimateReadingTime } from "@/lib/data";
 
-export function generateStaticParams() {
-  return getBlogPosts().map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  const posts = await getBlogPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const post = getBlogPostBySlug(params.slug);
+export async function generateMetadata({
+  params
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const post = await getBlogPostBySlug(params.slug);
   if (!post) return {};
   return { title: post.title, description: post.excerpt };
 }
@@ -23,8 +28,8 @@ function formatDate(iso: string) {
   });
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = getBlogPostBySlug(params.slug);
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const post = await getBlogPostBySlug(params.slug);
   if (!post) notFound();
 
   return (

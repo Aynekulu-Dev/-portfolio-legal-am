@@ -5,8 +5,8 @@ import { getProfile } from "@/lib/data";
 
 export const metadata: Metadata = { title: "አግኙኝ" };
 
-export default function ContactPage() {
-  const profile = getProfile();
+export default async function ContactPage() {
+  const profile = await getProfile();
 
   return (
     <div className="mx-auto max-w-content px-6 py-20">

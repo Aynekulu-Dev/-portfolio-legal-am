@@ -32,8 +32,8 @@ const CREDENTIALS: { group: string; items: string[] }[] = [
   { group: "የምስክርነት ወረቀት", items: ["የጠበቆች ማህበር አባል", "የፍትሕ ሥልጠና ተመራቂ"] }
 ];
 
-export default function AboutPage() {
-  const profile = getProfile();
+export default async function AboutPage() {
+  const profile = await getProfile();
 
   return (
     <div className="mx-auto max-w-content px-6 py-20">
