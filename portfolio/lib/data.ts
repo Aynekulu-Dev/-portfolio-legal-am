@@ -18,9 +18,12 @@ async function apiFetch<T>(path: string): Promise<T | null> {
   if (!API_URL) return null;
   try {
     const res = await fetch(`${API_URL}${path}`, {
-      // Revalidate periodically instead of caching forever or hitting the
-      // API on every single request.
-      next: { revalidate: 60 }
+      // no-store forces these pages to render dynamically (per-request)
+      // instead of being baked in at build time. This matters because the
+      // backend is on Render's free tier and spins down when idle — if we
+      // fetched at build time and the backend happened to be asleep, the
+      // fallback JSON would get permanently baked into the static HTML.
+      cache: "no-store"
     });
     if (!res.ok) return null;
     return (await res.json()) as T;
