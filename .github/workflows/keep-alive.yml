@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping backend health endpoint
-        run: curl -sf https://YOUR-BACKEND-URL.onrender.com/health || true
+        run: curl -sf https://portfolio-backend-4z60.onrender.com/health || true
