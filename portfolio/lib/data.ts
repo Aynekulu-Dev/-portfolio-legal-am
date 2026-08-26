@@ -100,6 +100,8 @@ function mapTestimonial(row: any): Testimonial {
     avatar_url: row.avatarUrl
   };
 }
+
+export async function getProfile(): Promise<Profile> {
   const row = await apiFetch<any>("/profile");
   return row ? mapProfile(row) : profileFallback;
 }
