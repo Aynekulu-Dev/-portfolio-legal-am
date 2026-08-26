@@ -8,3 +8,5 @@ build/
 
 # ReCode local database
 .recode
+backend/dist/
+*.zip
