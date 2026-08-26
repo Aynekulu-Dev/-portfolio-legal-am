@@ -114,7 +114,7 @@ export async function getServices(): Promise<Service[]> {
 
 export async function getCases(): Promise<CaseFile[]> {
   const rows = await apiFetch<any[]>("/projects");
-  return rows ? rows.map(mapCase) : projectsFallback;
+  return rows ? rows.map(mapCase) : (projectsFallback as CaseFile[]);
 }
 
 export async function getCasesByCategory(
