@@ -103,9 +103,10 @@ function mapTestimonial(row: any): Testimonial {
 
 export async function getProfile(): Promise<Profile> {
   const row = await apiFetch<any>("/profile");
-  return row ? mapProfile(row) : profileFallback;
+  return row
+    ? mapProfile(row)
+    : { ...profileFallback, timeline: [], credentials: [] };
 }
-
 export async function getServices(): Promise<Service[]> {
   const rows = await apiFetch<any[]>("/services");
   return rows ?? servicesFallback;
