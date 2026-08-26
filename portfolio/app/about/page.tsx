@@ -11,9 +11,25 @@ export default async function AboutPage() {
 
   return (
     <div className="mx-auto max-w-content px-6 py-20">
-      <p className="font-mono text-xs text-maroon">ስለ እኔ</p>
-      <h1 className="mt-3 font-display text-4xl text-fg">ማንነት</h1>
-      <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted">{profile.bio}</p>
+      <div className="flex flex-col-reverse items-start gap-10 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="font-mono text-xs text-maroon">ስለ እኔ</p>
+          <h1 className="mt-3 font-display text-4xl text-fg">ማንነት</h1>
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted">{profile.bio}</p>
+        </div>
+
+        {profile.avatar_url && (
+          <div className="shrink-0">
+            <div className="h-40 w-40 overflow-hidden rounded-sm border border-border sm:h-48 sm:w-48 lg:h-64 lg:w-64">
+              <img
+                src={profile.avatar_url}
+                alt={profile.full_name}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="mt-16">
         <SectionLabel article="፫" name="የሥራ ልምድ" />
