@@ -22,6 +22,13 @@
       "when": 1787650110746,
       "tag": "0002_early_lyja",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787728413800,
+      "tag": "0003_easy_vengeance",
+      "breakpoints": true
     }
   ]
 }

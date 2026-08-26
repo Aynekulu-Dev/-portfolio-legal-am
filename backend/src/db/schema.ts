@@ -28,6 +28,9 @@ export const profile = pgTable("profile", {
   credentials: jsonb("credentials")
     .$type<{ group: string; items: string[] }[]>()
     .default([]),
+  // Site-wide SEO metadata — kept here since there's only one owner/site.
+  seoTitle: text("seo_title"),
+  seoDescription: text("seo_description"),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
 
@@ -61,7 +64,19 @@ export const blogPosts = pgTable("blog_posts", {
   slug: text("slug").notNull().unique(),
   excerpt: text("excerpt"),
   content: text("content").notNull(),
+  isPublished: boolean("is_published").default(true).notNull(),
   publishedAt: timestamp("published_at").defaultNow().notNull()
+});
+
+// F. testimonials — endorsements from clients / colleagues
+export const testimonials = pgTable("testimonials", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  role: text("role"), // e.g. "ደንበኛ", "ባልደረባ ጠበቃ", organization/title
+  quote: text("quote").notNull(),
+  avatarUrl: text("avatar_url"),
+  sortOrder: integer("sort_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
 // E'. admins — portfolio owner login (email + hashed password)

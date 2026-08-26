@@ -8,7 +8,7 @@ import { CreateProjectDto, UpdateProjectDto } from "./dto/project.dto";
 export class ProjectsService {
   constructor(@Inject(DB) private readonly db: Database) {}
 
-  findAll(category?: "criminal" | "research") {
+  findAll(category?: "criminal" | "civil" | "commercial" | "research") {
     const query = this.db.select().from(projects).orderBy(desc(projects.createdAt));
     if (category) {
       return this.db

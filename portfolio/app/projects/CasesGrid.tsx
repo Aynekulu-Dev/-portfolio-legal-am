@@ -4,11 +4,13 @@ import { useState } from "react";
 import { CaseCard } from "@/components/CaseCard";
 import type { CaseFile } from "@/lib/data";
 
-type Filter = "all" | "criminal" | "research";
+type Filter = "all" | "criminal" | "civil" | "commercial" | "research";
 
 const TABS: { value: Filter; label: string }[] = [
   { value: "all", label: "ሁሉም" },
   { value: "criminal", label: "የወንጀል መዝገቦች" },
+  { value: "civil", label: "የፍትሐብሔር መዝገቦች" },
+  { value: "commercial", label: "የንግድ መዝገቦች" },
   { value: "research", label: "ጥናቶች" }
 ];
 

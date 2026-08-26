@@ -12,6 +12,14 @@ export class BlogController {
     return this.blogService.findAll();
   }
 
+  // Admin inbox-style listing — includes drafts. Must be declared before
+  // the ":slug" route below so Nest doesn't match "admin" as a slug.
+  @Get("admin/all")
+  @UseGuards(AdminGuard)
+  findAllAdmin() {
+    return this.blogService.findAllAdmin();
+  }
+
   // Matches the frontend's /blog/[slug] route directly.
   @Get(":slug")
   findBySlug(@Param("slug") slug: string) {

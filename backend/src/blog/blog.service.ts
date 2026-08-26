@@ -1,5 +1,5 @@
 import { ConflictException, Inject, Injectable, NotFoundException } from "@nestjs/common";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { DB, Database } from "../db/db.module";
 import { blogPosts } from "../db/schema";
 import { CreatePostDto, UpdatePostDto } from "./dto/post.dto";
@@ -20,12 +20,25 @@ function slugify(input: string): string {
 export class BlogService {
   constructor(@Inject(DB) private readonly db: Database) {}
 
+  // Public listing — published posts only.
   findAll() {
+    return this.db
+      .select()
+      .from(blogPosts)
+      .where(eq(blogPosts.isPublished, true))
+      .orderBy(desc(blogPosts.publishedAt));
+  }
+
+  // Admin listing — everything, including drafts.
+  findAllAdmin() {
     return this.db.select().from(blogPosts).orderBy(desc(blogPosts.publishedAt));
   }
 
   async findBySlug(slug: string) {
-    const [row] = await this.db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+    const [row] = await this.db
+      .select()
+      .from(blogPosts)
+      .where(and(eq(blogPosts.slug, slug), eq(blogPosts.isPublished, true)));
     if (!row) throw new NotFoundException(`Post "${slug}" not found.`);
     return row;
   }
@@ -47,7 +60,13 @@ export class BlogService {
 
     const [created] = await this.db
       .insert(blogPosts)
-      .values({ title: dto.title, slug, excerpt: dto.excerpt, content: dto.content })
+      .values({
+        title: dto.title,
+        slug,
+        excerpt: dto.excerpt,
+        content: dto.content,
+        isPublished: dto.isPublished ?? true
+      })
       .returning();
     return created;
   }
@@ -66,7 +85,8 @@ export class BlogService {
       ...(dto.title !== undefined && { title: dto.title }),
       ...(nextSlug !== undefined && { slug: nextSlug }),
       ...(dto.excerpt !== undefined && { excerpt: dto.excerpt }),
-      ...(dto.content !== undefined && { content: dto.content })
+      ...(dto.content !== undefined && { content: dto.content }),
+      ...(dto.isPublished !== undefined && { isPublished: dto.isPublished })
     };
 
     const [updated] = await this.db.update(blogPosts).set(patch).where(eq(blogPosts.id, id)).returning();

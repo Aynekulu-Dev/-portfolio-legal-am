@@ -1,6 +1,6 @@
 import { IsArray, IsIn, IsOptional, IsString, MaxLength } from "class-validator";
 
-const CATEGORIES = ["criminal", "research"] as const;
+const CATEGORIES = ["criminal", "civil", "commercial", "research"] as const;
 
 export class CreateProjectDto {
   @IsOptional() @IsString() @MaxLength(100)

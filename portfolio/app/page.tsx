@@ -3,12 +3,14 @@ import { ArrowRight, Download } from "lucide-react";
 import { SectionLabel } from "@/components/SectionLabel";
 import { ServiceCard } from "@/components/ServiceCard";
 import { CaseCard } from "@/components/CaseCard";
-import { getProfile, getServices, getCases } from "@/lib/data";
+import { TestimonialCard } from "@/components/TestimonialCard";
+import { getProfile, getServices, getCases, getTestimonials } from "@/lib/data";
 
 export default async function HomePage() {
   const profile = await getProfile();
   const services = (await getServices()).slice(0, 4);
   const featuredCases = (await getCases()).slice(0, 3);
+  const testimonials = await getTestimonials();
 
   return (
     <>
@@ -78,6 +80,18 @@ export default async function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/* Testimonials */}
+      {testimonials.length > 0 && (
+        <section className="mx-auto max-w-content px-6 py-20">
+          <SectionLabel article="፫" name="ምስክርነቶች" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {testimonials.map((t) => (
+              <TestimonialCard key={t.id} item={t} />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }

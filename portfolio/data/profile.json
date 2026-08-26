@@ -1,15 +1,20 @@
 {
-  "full_name": "አቶ ዳዊት አለሙ",
+  "full_name": "ምረቱ ይዘንጋው ድንቁ",
   "headline": "ዐቃቤ ሕግ — የፌዴራል ጠቅላይ ዐቃቤ ሕግ መሥሪያ ቤት",
   "bio": "ላለፉት ዘጠኝ ዓመታት በወንጀል ጉዳዮች ክስ በማቅረብ፣ ማስረጃ በማደራጀት እና ምስክሮችን በማዘጋጀት ላይ ሠርቻለሁ። ትኩረቴ በሥርዓት፣ በማስረጃ ላይ በተመሠረተ ትንተና እና ፍትሕ በወቅቱ እንዲደርስ በማድረግ ላይ ነው።",
   "avatar_url": "/avatar.jpg",
   "resume_url": "/resume/resume.pdf",
   "socials": {
-    "linkedin": "https://linkedin.com/in/dawit-alemu-law",
-    "telegram": "https://t.me/dawitalemu_law",
-    "email": "mailto:dawit.alemu@example.com"
+    "linkedin": "",
+    "telegram": "https://t.me/mihretu1314",
+    "email": "mailto:mihretuyizengaw2019@gmail.com",
+    "phone": "tel:+251913149876"
   },
   "location": "አዲስ አበባ, ኢትዮጵያ",
   "years_experience": 9,
-  "focus_areas": ["የወንጀል ክስ", "የምስክርነት አመራር", "የሕግ ምርምር"]
+  "focus_areas": [
+    "የወንጀል ክስ",
+    "የምስክርነት አመራር",
+    "የሕግ ምርምር"
+  ]
 }

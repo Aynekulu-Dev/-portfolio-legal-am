@@ -33,7 +33,8 @@ const EMPTY = {
   focus_areas: "",
   linkedin: "",
   telegram: "",
-  email: ""
+  email: "",
+  phone: ""
 };
 
 const EMPTY_TIMELINE_ITEM: TimelineItem = { date: "", role: "", org: "", detail: "" };
@@ -64,7 +65,8 @@ export default function AdminProfilePage() {
           focus_areas: (p.focusAreas ?? []).join(", "),
           linkedin: p.socials?.linkedin ?? "",
           telegram: p.socials?.telegram ?? "",
-          email: p.socials?.email ?? ""
+          email: p.socials?.email ?? "",
+          phone: p.socials?.phone ?? ""
         });
         setTimeline(p.timeline && p.timeline.length ? p.timeline : []);
         setCredentials(p.credentials && p.credentials.length ? p.credentials : []);
@@ -155,7 +157,8 @@ export default function AdminProfilePage() {
           socials: {
             ...(form.linkedin && { linkedin: form.linkedin }),
             ...(form.telegram && { telegram: form.telegram }),
-            ...(form.email && { email: form.email })
+            ...(form.email && { email: form.email }),
+            ...(form.phone && { phone: form.phone })
           },
           timeline: timeline
             .filter((t) => t.date || t.role || t.org || t.detail)
@@ -265,7 +268,7 @@ export default function AdminProfilePage() {
           <input {...field("focus_areas")} className={inputClass} />
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className={labelClass}>LinkedIn</label>
             <input {...field("linkedin")} className={inputClass} />
@@ -277,6 +280,10 @@ export default function AdminProfilePage() {
           <div>
             <label className={labelClass}>Email (mailto:...)</label>
             <input {...field("email")} className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>ስልክ (tel:+251...)</label>
+            <input {...field("phone")} placeholder="tel:+251913149876" className={inputClass} />
           </div>
         </div>
 

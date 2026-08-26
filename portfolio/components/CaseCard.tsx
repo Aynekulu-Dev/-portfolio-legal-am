@@ -2,6 +2,8 @@ import type { CaseFile } from "@/lib/data";
 
 const CATEGORY_LABEL: Record<string, string> = {
   criminal: "የወንጀል መዝገብ",
+  civil: "የፍትሐብሔር መዝገብ",
+  commercial: "የንግድ መዝገብ",
   research: "ጥናትና ትንተና"
 };
 

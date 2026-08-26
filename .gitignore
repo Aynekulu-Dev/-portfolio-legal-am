@@ -5,3 +5,6 @@ dist/
 build/
 .next/
 *.log
+
+# ReCode local database
+.recode

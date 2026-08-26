@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
 import { getProfile } from "@/lib/data";
 
@@ -7,6 +7,7 @@ export const metadata: Metadata = { title: "አግኙኝ" };
 
 export default async function ContactPage() {
   const profile = await getProfile();
+  const phone = profile.socials?.phone;
 
   return (
     <div className="mx-auto max-w-content px-6 py-20">
@@ -25,6 +26,17 @@ export default async function ContactPage() {
               <p className="mt-0.5 text-sm text-fg">{profile.location}</p>
             </div>
           </div>
+          {phone && (
+            <div className="flex items-start gap-3">
+              <Phone size={17} className="mt-0.5 text-maroon" />
+              <div>
+                <p className="font-mono text-xs text-muted">ስልክ</p>
+                <a href={phone} className="mt-0.5 block text-sm text-fg hover:text-maroon">
+                  {phone.replace(/^tel:/, "")}
+                </a>
+              </div>
+            </div>
+          )}
           <div className="flex items-start gap-3">
             <Mail size={17} className="mt-0.5 text-maroon" />
             <div>

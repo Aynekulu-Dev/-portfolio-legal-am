@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/admin/services", label: "አገልግሎቶች" },
   { href: "/admin/projects", label: "መዝገቦች" },
   { href: "/admin/blog", label: "ብሎግ" },
+  { href: "/admin/testimonials", label: "ምስክርነቶች" },
   { href: "/admin/contact", label: "መልእክቶች" },
   { href: "/admin/change-password", label: "የይለፍ ቃል" }
 ];

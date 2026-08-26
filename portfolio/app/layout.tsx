@@ -26,8 +26,8 @@ const mono = JetBrains_Mono({
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await getProfile();
   return {
-    title: `${profile.full_name} — ${profile.headline}`,
-    description: profile.bio
+    title: profile.seo_title || `${profile.full_name} — ${profile.headline}`,
+    description: profile.seo_description || profile.bio
   };
 }
 

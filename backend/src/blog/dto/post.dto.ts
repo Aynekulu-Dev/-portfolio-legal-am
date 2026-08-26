@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class CreatePostDto {
   @IsString() @MaxLength(300)
@@ -13,6 +13,9 @@ export class CreatePostDto {
 
   @IsString()
   content!: string;
+
+  @IsOptional() @IsBoolean()
+  isPublished?: boolean;
 }
 
 export class UpdatePostDto {
@@ -27,4 +30,7 @@ export class UpdatePostDto {
 
   @IsOptional() @IsString()
   content?: string;
+
+  @IsOptional() @IsBoolean()
+  isPublished?: boolean;
 }

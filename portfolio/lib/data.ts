@@ -2,6 +2,7 @@ import profileFallback from "@/data/profile.json";
 import servicesFallback from "@/data/services.json";
 import projectsFallback from "@/data/projects.json";
 import blogFallback from "@/data/blog.json";
+import testimonialsFallback from "@/data/testimonials.json";
 
 // Reads live data from the NestJS backend (NEXT_PUBLIC_API_URL). Falls back
 // to the local JSON files in /data if the API URL isn't set or a request
@@ -9,10 +10,21 @@ import blogFallback from "@/data/blog.json";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export type Profile = typeof profileFallback;
+export type TimelineItem = { date: string; role: string; org: string; detail: string };
+export type CredentialGroup = { group: string; items: string[] };
+
+export type Profile = typeof profileFallback & {
+  timeline: TimelineItem[];
+  credentials: CredentialGroup[];
+  seo_title?: string | null;
+  seo_description?: string | null;
+};
 export type Service = (typeof servicesFallback)[number];
-export type CaseFile = (typeof projectsFallback)[number];
-export type BlogPost = (typeof blogFallback)[number];
+export type CaseFile = Omit<(typeof projectsFallback)[number], "category"> & {
+  category: "criminal" | "civil" | "commercial" | "research";
+};
+export type BlogPost = (typeof blogFallback)[number] & { is_published?: boolean };
+export type Testimonial = (typeof testimonialsFallback)[number];
 
 async function apiFetch<T>(path: string): Promise<T | null> {
   if (!API_URL) return null;
@@ -46,7 +58,11 @@ function mapProfile(row: any): Profile {
     socials: row.socials ?? {},
     location: row.location,
     years_experience: row.yearsExperience,
-    focus_areas: row.focusAreas ?? []
+    focus_areas: row.focusAreas ?? [],
+    timeline: row.timeline ?? [],
+    credentials: row.credentials ?? [],
+    seo_title: row.seoTitle ?? null,
+    seo_description: row.seoDescription ?? null
   };
 }
 
@@ -75,7 +91,15 @@ function mapBlogPost(row: any): BlogPost {
   };
 }
 
-export async function getProfile(): Promise<Profile> {
+function mapTestimonial(row: any): Testimonial {
+  return {
+    id: row.id,
+    name: row.name,
+    role: row.role,
+    quote: row.quote,
+    avatar_url: row.avatarUrl
+  };
+}
   const row = await apiFetch<any>("/profile");
   return row ? mapProfile(row) : profileFallback;
 }
@@ -91,10 +115,15 @@ export async function getCases(): Promise<CaseFile[]> {
 }
 
 export async function getCasesByCategory(
-  category: "criminal" | "research"
+  category: "criminal" | "civil" | "commercial" | "research"
 ): Promise<CaseFile[]> {
   const all = await getCases();
   return all.filter((p) => p.category === category);
+}
+
+export async function getTestimonials(): Promise<Testimonial[]> {
+  const rows = await apiFetch<any[]>("/testimonials");
+  return rows ? rows.map(mapTestimonial) : testimonialsFallback;
 }
 
 export async function getBlogPosts(): Promise<BlogPost[]> {

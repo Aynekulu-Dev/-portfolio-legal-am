@@ -1,10 +1,11 @@
-import { Linkedin, Send, Mail } from "lucide-react";
+import { Linkedin, Send, Mail, Phone } from "lucide-react";
 import type { Profile } from "@/lib/data";
 
 const ICONS: Record<string, typeof Linkedin> = {
   linkedin: Linkedin,
   telegram: Send,
-  email: Mail
+  email: Mail,
+  phone: Phone
 };
 
 export function Footer({ profile }: { profile: Profile }) {
@@ -20,12 +21,13 @@ export function Footer({ profile }: { profile: Profile }) {
           {Object.entries(profile.socials).map(([key, url]) => {
             const Icon = ICONS[key];
             if (!Icon || !url) return null;
+            const isExternal = key !== "email" && key !== "phone";
             return (
               <a
                 key={key}
                 href={url as string}
-                target={key === "email" ? undefined : "_blank"}
-                rel={key === "email" ? undefined : "noreferrer noopener"}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noreferrer noopener" : undefined}
                 aria-label={key}
                 className="text-muted transition-colors hover:text-maroon"
               >

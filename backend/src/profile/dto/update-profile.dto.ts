@@ -62,4 +62,10 @@ export class UpdateProfileDto {
   @ValidateNested({ each: true })
   @Type(() => CredentialGroupDto)
   credentials?: CredentialGroupDto[];
+
+  @IsOptional() @IsString() @MaxLength(70)
+  seo_title?: string;
+
+  @IsOptional() @IsString() @MaxLength(200)
+  seo_description?: string;
 }

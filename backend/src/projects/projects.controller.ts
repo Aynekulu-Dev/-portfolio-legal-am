@@ -21,7 +21,7 @@ export class ProjectsController {
   // GET /projects            -> all
   // GET /projects?category=research  -> matches getCasesByCategory() on the frontend
   @Get()
-  findAll(@Query("category") category?: "criminal" | "research") {
+  findAll(@Query("category") category?: "criminal" | "civil" | "commercial" | "research") {
     return this.projectsService.findAll(category);
   }
 

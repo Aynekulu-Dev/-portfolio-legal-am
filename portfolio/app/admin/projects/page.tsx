@@ -9,7 +9,7 @@ type ProjectRow = {
   caseNo: string | null;
   title: string;
   description: string;
-  category: "criminal" | "research";
+  category: "criminal" | "civil" | "commercial" | "research";
   statutes: string[] | null;
   court: string | null;
   outcome: string | null;
@@ -19,7 +19,7 @@ const EMPTY = {
   case_no: "",
   title: "",
   description: "",
-  category: "criminal" as "criminal" | "research",
+  category: "criminal" as "criminal" | "civil" | "commercial" | "research",
   statutes: "",
   court: "",
   outcome: ""
@@ -137,10 +137,12 @@ export default function AdminProjectsPage() {
             />
             <select
               value={form.category}
-              onChange={(e) => setForm((f) => ({ ...f, category: e.target.value as "criminal" | "research" }))}
+              onChange={(e) => setForm((f) => ({ ...f, category: e.target.value as "criminal" | "civil" | "commercial" | "research" }))}
               className={inputClass}
             >
               <option value="criminal">ወንጀል (criminal)</option>
+              <option value="civil">ፍትሐብሔር (civil)</option>
+              <option value="commercial">ንግድ (commercial)</option>
               <option value="research">ጥናት (research)</option>
             </select>
           </div>
@@ -203,7 +205,10 @@ export default function AdminProjectsPage() {
             <div key={item.id} className="flex items-start justify-between gap-4 p-4">
               <div>
                 <p className="font-mono text-[11px] text-muted">
-                  {item.caseNo || "—"} · {item.category === "criminal" ? "ወንጀል" : "ጥናት"}
+                  {item.caseNo || "—"} ·{" "}
+                  {{ criminal: "ወንጀል", civil: "ፍትሐብሔር", commercial: "ንግድ", research: "ጥናት" }[
+                    item.category
+                  ] ?? item.category}
                 </p>
                 <p className="mt-1 font-display text-base text-fg">{item.title}</p>
                 <p className="mt-1 text-sm text-muted">{item.description}</p>

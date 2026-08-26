@@ -29,6 +29,8 @@ export class ProfileService {
       ...(dto.focus_areas !== undefined && { focusAreas: dto.focus_areas }),
       ...(dto.timeline !== undefined && { timeline: dto.timeline }),
       ...(dto.credentials !== undefined && { credentials: dto.credentials }),
+      ...(dto.seo_title !== undefined && { seoTitle: dto.seo_title }),
+      ...(dto.seo_description !== undefined && { seoDescription: dto.seo_description }),
       updatedAt: new Date()
     };
 

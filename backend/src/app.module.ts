@@ -10,6 +10,7 @@ import { ProjectsModule } from "./projects/projects.module";
 import { BlogModule } from "./blog/blog.module";
 import { ContactModule } from "./contact/contact.module";
 import { UploadsModule } from "./uploads/uploads.module";
+import { TestimonialsModule } from "./testimonials/testimonials.module";
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { UploadsModule } from "./uploads/uploads.module";
     ProjectsModule,
     BlogModule,
     ContactModule,
-    UploadsModule
+    UploadsModule,
+    TestimonialsModule
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }]
 })
